@@ -1,0 +1,38 @@
+.md-button {
+  padding: 0 6px 0 6px;
+  margin: 6px 8px 6px 8px;
+  min-width: 88px;
+  border-radius: 3px;
+  font-size: 14px;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration:none;
+  border: none;
+  outline: none;
+}
+
+div.box {
+  background: #EEE;
+  height: 100%;
+  width: 100%;
+}
+
+div.div1 {
+  background: #999;
+  float: left;
+  height: 100%;
+  width: auto;
+}
+
+div.div2 {
+  background: #666;
+  height: 100%;
+}
+
+div.clear {
+  clear: both;
+  height: 1px;
+  overflow: hidden;
+  font-size: 0pt;
+  margin-top: -1px;
+}
