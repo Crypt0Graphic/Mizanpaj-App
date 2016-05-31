@@ -11,28 +11,12 @@
   outline: none;
 }
 
-div.box {
-  background: #EEE;
-  height: 100%;
-  width: 100%;
+#leftCanvas {
+  max-width: 50%;
+  height: auto;
 }
 
-div.div1 {
-  background: #999;
-  float: left;
-  height: 100%;
-  width: auto;
-}
-
-div.div2 {
-  background: #666;
-  height: 100%;
-}
-
-div.clear {
-  clear: both;
-  height: 1px;
-  overflow: hidden;
-  font-size: 0pt;
-  margin-top: -1px;
+#rightCanvas {
+  max-width: 50%;
+  height: auto;
 }
