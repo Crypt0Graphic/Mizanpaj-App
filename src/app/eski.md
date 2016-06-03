@@ -29,16 +29,20 @@ export class MizanpajAppAppComponent implements OnInit {
     // Seçimin Başladığı ve Bittiği Koordinatlara Göre Max & Min
     let minX, minY, maxX, maxY;
 
-    console.log("Inıt");
-
     // Küpürü Yükle
     fabric.Image.fromURL(src, function (oImg) {
       oImg.left = 10;
       oImg.top = 10;
       canvas.add(oImg);
       canvas.renderAll();
-      console.log("Image");
     }, { hasControls: false, selectable: false, evented: false, strokeDashArray: [2, 2], opacity: 1 });
+
+    // Yeniden Yükle
+    // canvas.on('mouse:move', function (e) {
+    //   firstX = getMouseCoords(e)[0];
+    //   firstY = getMouseCoords(e)[1];
+    //   console.log('Move:' + firstX + ' ' + firstY);
+    // });
 
     // Seçimin Başladığı Koordinatlar
     canvas.on('mouse:down', function (e) {
@@ -54,21 +58,20 @@ export class MizanpajAppAppComponent implements OnInit {
       console.log('Up: ' + lastX + ' ' + lastY);
       getRectCoords();
 
-      // if (maxX - minX > 1) {
-      //   console.log('If');
-      //   canvas.clipTo = function (ctx) {
-      //     event.preventDefault()
-      //     ctx.rect(minX, minY, maxX - minX, maxY - minY);
-      //     console.log('ClipTo ' + minX + ' ' + maxX + ' ' + minY + ' ' + maxY);
-      //   }
+      if (maxX - minX > 1) {
+        console.log('If');
+        canvas.clipTo = function (ctx) {
+          event.preventDefault()
+          ctx.rect(minX, minY, maxX - minX, maxY - minY);
+          console.log('ClipTo ' + minX + ' ' + maxX + ' ' + minY + ' ' + maxY);
+        }
 
-      //   fabric.Image.fromURL(src, function (oImg) {
-      //     oImg.left = 10;
-      //     oImg.top = 10;
-      //     canvas.add(oImg);
-      //     canvas.renderAll();
-      //   }, { hasControls: false, selectable: false, evented: false, strokeDashArray: [2, 2], opacity: 1 });
-      // }
+        fabric.Image.fromURL(src, function (oImg) {
+          oImg.left = 10;
+          oImg.top = 10;
+          canvas.add(oImg);
+        }, { hasControls: false, selectable: false, evented: false, strokeDashArray: [2, 2], opacity: 1 });
+      }
     });
 
     // Min & Max Değerleri (Dikdörtgen Koordinatları)
@@ -102,40 +105,6 @@ export class MizanpajAppAppComponent implements OnInit {
       return XY;
     }
   };
-
-  public crop() {
-    var c = <HTMLCanvasElement> document.getElementById("cLeft");
-    var ctx = c.getContext("2d");
-    // Clip a rectangular area
-    ctx.rect(10, 10, 200, 200);
-    ctx.stroke();
-    ctx.clip();
-    // Draw red rectangle after clip()
-    ctx.fillStyle = "red";
-    ctx.fillRect(0, 0, 150, 100);
-  }
-
-  public send() {
-    var canvasLeft = new fabric.Canvas('cLeft');
-    var canvasRight = new fabric.Canvas('cRight');
-    var dt = canvasLeft.toDataURL('image/jpeg');
-
-    console.log();
-
-    this.undo();
-
-    fabric.Image.fromURL("../../images/kupurSecond.jpg", function (img) {
-      canvasRight.add(img)
-    });
-  }
-
-  public undo() {
-    var canvasLeft = new fabric.Canvas('cLeft');
-    fabric.Image.fromURL("../../images/kupurSecond.jpg", function (img) {
-      canvasLeft.add(img)
-    });
-  }
-
 }
 
 

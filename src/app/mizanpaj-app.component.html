@@ -6,17 +6,19 @@
     </md-toolbar>
     <p>
     <section>
-    <button md-raised-button color="primary" class="md-button">KIRP</button>
-    <button md-raised-button color="default" class="md-button">İPTAL</button>
-    <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary"></button>
+    <!--<button md-raised-button color="primary" class="md-button">GÖNDER<i class="material-icons">call_made</i></button>
+    <button md-raised-button color="default" class="md-button"><i class="material-icons">clear</i>İPTAL</button>-->
+    <button md-icon-button color="primary" class="md-button" (click)="crop()"><md-icon>content_cut</md-icon></button>
+    <button md-icon-button color="primary" class="md-button" (click)="send()"><md-icon>forward</md-icon></button>
+    <button md-icon-button color="primary" class="md-button" (click)="undo()"><md-icon>undo</md-icon></button>
   </section>
 </div>
 
 <div style="width:100%;"> 
         <div style="float:left; margin: 10px; display:inline-block;" class="leftCanvas">
-          <canvas id="c" width="1190px" height="842px" style="border:1px solid #000"></canvas>
+          <canvas id="cLeft" width="595px" height="842px" style="border:1px solid #000"></canvas>
          </div> 
-        <!--<div style="float:right; margin: 10px; display:inline-block;" class="rightCanvas">
-          <canvas id="c" width="595px" height="842px" style="border:1px solid #000"></canvas>
-          </div> -->
+        <div style="float:right; margin: 10px; display:inline-block;" class="rightCanvas">
+          <canvas id="cRight" width="595px" height="842px" style="border:1px solid #000"></canvas>
+          </div> 
 </div> 
