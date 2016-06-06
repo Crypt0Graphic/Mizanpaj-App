@@ -12,9 +12,15 @@ import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
   directives: [MdToolbar, MD_BUTTON_DIRECTIVES, MdIcon],
   providers: [MdIconRegistry]
 })
+
 export class MizanpajAppAppComponent implements OnInit {
 
   title = 'mizanpaj-app!';
+
+  public firstX: number;
+  public firstY: number;
+  public lastX: number;
+  public lastY: number;
 
   constructor(mdIconRegistry: MdIconRegistry) {
     mdIconRegistry
@@ -22,120 +28,71 @@ export class MizanpajAppAppComponent implements OnInit {
   }
 
   ngOnInit() {
+
     let canvas = new fabric.Canvas('cLeft');
     let src = "../../images/kupurSecond.jpg";
-    // Seçimin Başladığı ve Bittiği Koordinatlar
-    let firstX, firstY, lastX, lastY;
-    // Seçimin Başladığı ve Bittiği Koordinatlara Göre Max & Min
-    let minX, minY, maxX, maxY;
 
-    console.log("Inıt");
-
-    // Küpürü Yükle
-    fabric.Image.fromURL(src, function (oImg) {
-      oImg.left = 10;
-      oImg.top = 10;
-      canvas.add(oImg);
-      canvas.renderAll();
-      console.log("Image");
-    }, { hasControls: false, selectable: false, evented: false, strokeDashArray: [2, 2], opacity: 1 });
-
-    // Seçimin Başladığı Koordinatlar
-    canvas.on('mouse:down', function (e) {
-      firstX = getMouseCoords(e)[0];
-      firstY = getMouseCoords(e)[1];
-      console.log('Down:' + firstX + ' ' + firstY);
+    canvas.on('mouse:down', (event) => {
+      var position = canvas.getPointer(event.e);
+      this.firstX = position.x;
+      this.firstY = position.y;
     });
 
-    // Seçimin Bittiği Koordinatlar
-    canvas.on('mouse:up', function (e) {
-      lastX = getMouseCoords(e)[0];
-      lastY = getMouseCoords(e)[1];
-      console.log('Up: ' + lastX + ' ' + lastY);
-      getRectCoords();
-
-      // if (maxX - minX > 1) {
-      //   console.log('If');
-      //   canvas.clipTo = function (ctx) {
-      //     event.preventDefault()
-      //     ctx.rect(minX, minY, maxX - minX, maxY - minY);
-      //     console.log('ClipTo ' + minX + ' ' + maxX + ' ' + minY + ' ' + maxY);
-      //   }
-
-      //   fabric.Image.fromURL(src, function (oImg) {
-      //     oImg.left = 10;
-      //     oImg.top = 10;
-      //     canvas.add(oImg);
-      //     canvas.renderAll();
-      //   }, { hasControls: false, selectable: false, evented: false, strokeDashArray: [2, 2], opacity: 1 });
-      // }
+    canvas.on('mouse:up', (event) => {
+      var position = canvas.getPointer(event.e);
+      this.lastX = position.x;
+      this.lastY = position.y;
+      // ReLoading Image
+      loadImage(src, canvas, this.firstX, this.firstY, this.lastX, this.lastY);
     });
 
-    // Min & Max Değerleri (Dikdörtgen Koordinatları)
-    function getRectCoords() {
-      if (firstX < lastX) {
-        minX = firstX;
-        maxX = lastX;
-      }
-      else {
-        minX = lastX;
-        maxX = firstX;
-      }
+    loadImage(src, canvas);
 
-      if (firstY < lastY) {
-        minY = firstY;
-        maxY = lastY;
-      }
-      else {
-        minY = lastY;
-        maxY = firstY;
-      }
+  }; // ngOnInıt Son
 
-      //console.log(minX + ' ' + maxX + ' ' + minY + ' ' + maxY);
-    }
-
-    function getMouseCoords(event) {
-      var pointer = canvas.getPointer(event.e);
-      var posX = pointer.x;
-      var posY = pointer.y;
-      let XY = [posX, posY];
-      return XY;
-    }
-  };
-
-  public crop() {
-    var c = <HTMLCanvasElement> document.getElementById("cLeft");
-    var ctx = c.getContext("2d");
-    // Clip a rectangular area
-    ctx.rect(10, 10, 200, 200);
-    ctx.stroke();
-    ctx.clip();
-    // Draw red rectangle after clip()
-    ctx.fillStyle = "red";
-    ctx.fillRect(0, 0, 150, 100);
-  }
-
-  public send() {
-    var canvasLeft = new fabric.Canvas('cLeft');
-    var canvasRight = new fabric.Canvas('cRight');
-    var dt = canvasLeft.toDataURL('image/jpeg');
-
-    console.log();
-
-    this.undo();
-
-    fabric.Image.fromURL("../../images/kupurSecond.jpg", function (img) {
-      canvasRight.add(img)
-    });
-  }
-
-  public undo() {
-    var canvasLeft = new fabric.Canvas('cLeft');
-    fabric.Image.fromURL("../../images/kupurSecond.jpg", function (img) {
-      canvasLeft.add(img)
-    });
+  public clip() {
+    //return this.firstX;
+    console.log(this.firstX);
   }
 
 }
+
+function loadImage(src: string, canvas: any, fX?: number, fY?: number, lX?: number, lY?: number) {
+  canvas.clear();
+  fabric.Image.fromURL(src, function (oImg) {
+    oImg.left = 10;
+    oImg.top = 10;
+    canvas.add(oImg);
+
+    if (fX != undefined) {
+      let x: number, y: number;
+
+      if (fX < lX) {
+        x = fX;
+      }
+      else {
+        x = lX;
+      }
+
+      if (fY < lY) {
+        y = fY;
+      }
+      else {
+        y = lY;
+      }
+      var rect = new fabric.Rect({ left: x, top: y, width: Math.abs(lX - fX), height: Math.abs(lY - fY), strokeDashArray: [3, 3], stroke: 'red', strokeWidth: 1, fill: 'rgba(0,0,0,0)' });
+      canvas.add(rect);
+      console.log("->> Image Reloaded & Rect Drawwed: " + x + ' ' + y + ' ' + Math.abs(lX - fX) + ' ' + Math.abs(lY - fY));
+    }
+    else {
+      console.log("->> Image Loaded");
+    }
+    canvas.renderAll();
+    canvas.setHeight(oImg.getHeight() + 20);
+    canvas.setWidth(oImg.getWidth() + 20);
+  }, { hasControls: false, selectable: false, evented: false, strokeDashArray: [2, 2], opacity: 1 });
+}
+
+
 
 
