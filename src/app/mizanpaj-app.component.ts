@@ -15,8 +15,6 @@ import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
 
 export class MizanpajAppAppComponent implements OnInit {
 
-  title = 'mizanpaj-app!';
-
   public firstX: number;
   public firstY: number;
   public lastX: number;
@@ -29,7 +27,7 @@ export class MizanpajAppAppComponent implements OnInit {
 
   ngOnInit() {
 
-    let canvas = new fabric.Canvas('cLeft');
+    var canvas = new fabric.Canvas('cLeft');
     let src = "../../images/kupurSecond.jpg";
 
     canvas.on('mouse:down', (event) => {
@@ -42,29 +40,55 @@ export class MizanpajAppAppComponent implements OnInit {
       var position = canvas.getPointer(event.e);
       this.lastX = position.x;
       this.lastY = position.y;
-      // ReLoading Image
+      // ReLoad Image
       loadImage(src, canvas, this.firstX, this.firstY, this.lastX, this.lastY);
     });
 
     loadImage(src, canvas);
 
-  }; // ngOnInıt Son
+  }; // End of ngOnInıt
 
   public clip() {
-    //return this.firstX;
-    console.log(this.firstX);
+    var canvas = new fabric.Canvas('cLeft');
+    let src = "../../images/kupurSecond.jpg";
+    loadImage(src, canvas);
+
+    canvas.clipTo = (ctx) => {
+
+      console.log("-->> clipTo: " + this.firstX + " " + this.firstY);
+
+      var shp = new fabric.Rect({
+								top: this.firstY,
+								left: this.firstX,
+								width: Math.abs(this.lastX - this.firstX),
+								height: Math.abs(this.lastY - this.firstY),
+								fill: 'blue'
+      });
+      shp.render(ctx);
+    };
+  }
+
+  public undo() {
+    var canvas = new fabric.Canvas('cLeft');
+    let src = "../../images/kupurSecond.jpg";
+    loadImage(src, canvas);
+  }
+
+  public send() {
+    var canvas = new fabric.Canvas('cLeft');
+    var canvas = new fabric.Canvas('cRight');
   }
 
 }
 
 function loadImage(src: string, canvas: any, fX?: number, fY?: number, lX?: number, lY?: number) {
   canvas.clear();
-  fabric.Image.fromURL(src, function (oImg) {
+  fabric.Image.fromURL(src, (oImg) => {
     oImg.left = 10;
     oImg.top = 10;
     canvas.add(oImg);
 
-    if (fX != undefined) {
+    if (fX) {
       let x: number, y: number;
 
       if (fX < lX) {
@@ -82,10 +106,10 @@ function loadImage(src: string, canvas: any, fX?: number, fY?: number, lX?: numb
       }
       var rect = new fabric.Rect({ left: x, top: y, width: Math.abs(lX - fX), height: Math.abs(lY - fY), strokeDashArray: [3, 3], stroke: 'red', strokeWidth: 1, fill: 'rgba(0,0,0,0)' });
       canvas.add(rect);
-      console.log("->> Image Reloaded & Rect Drawwed: " + x + ' ' + y + ' ' + Math.abs(lX - fX) + ' ' + Math.abs(lY - fY));
+      console.log("-->> Image + Rect: " + x + ' ' + y + ' ' + Math.abs(lX - fX) + ' ' + Math.abs(lY - fY));
     }
     else {
-      console.log("->> Image Loaded");
+      console.log("-->> Image Loaded");
     }
     canvas.renderAll();
     canvas.setHeight(oImg.getHeight() + 20);
