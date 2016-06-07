@@ -19,6 +19,7 @@ export class MizanpajAppAppComponent implements OnInit {
   public firstY: number;
   public lastX: number;
   public lastY: number;
+  public data: string;
 
   constructor(mdIconRegistry: MdIconRegistry) {
     mdIconRegistry
@@ -53,19 +54,26 @@ export class MizanpajAppAppComponent implements OnInit {
     let src = "../../images/kupurSecond.jpg";
     loadImage(src, canvas);
 
-    canvas.clipTo = (ctx) => {
+    // If there is enough width -> clipTo
+    if (Math.abs(this.firstX - this.lastX) > 20 || Math.abs(this.firstY - this.lastY) > 20) {
 
-      console.log("-->> clipTo: " + this.firstX + " " + this.firstY);
+      canvas.clipTo = (ctx) => {
 
-      var shp = new fabric.Rect({
-								top: this.firstY,
-								left: this.firstX,
-								width: Math.abs(this.lastX - this.firstX),
-								height: Math.abs(this.lastY - this.firstY),
-								fill: 'blue'
-      });
-      shp.render(ctx);
-    };
+        console.log("-->> clipTo: " + this.firstX + " " + this.firstY);
+
+        var shp = new fabric.Rect({
+          top: this.firstY,
+          left: this.firstX,
+          width: Math.abs(this.lastX - this.firstX),
+          height: Math.abs(this.lastY - this.firstY),
+          hasControls: false,
+          selectable: false,
+          evented: false
+        });
+        shp.render(ctx);
+        this.data = JSON.stringify(canvas);
+      };
+    }
   }
 
   public undo() {
@@ -75,8 +83,8 @@ export class MizanpajAppAppComponent implements OnInit {
   }
 
   public send() {
-    var canvas = new fabric.Canvas('cLeft');
     var canvas = new fabric.Canvas('cRight');
+    canvas.loadFromJSON(this.data, canvas.renderAll.bind(canvas));
   }
 
 }
@@ -88,7 +96,7 @@ function loadImage(src: string, canvas: any, fX?: number, fY?: number, lX?: numb
     oImg.top = 10;
     canvas.add(oImg);
 
-    if (fX) {
+    if (fX && (Math.abs(fX - lX) > 20 || Math.abs(fY - lY) > 20)) {
       let x: number, y: number;
 
       if (fX < lX) {
@@ -104,7 +112,15 @@ function loadImage(src: string, canvas: any, fX?: number, fY?: number, lX?: numb
       else {
         y = lY;
       }
-      var rect = new fabric.Rect({ left: x, top: y, width: Math.abs(lX - fX), height: Math.abs(lY - fY), strokeDashArray: [3, 3], stroke: 'red', strokeWidth: 1, fill: 'rgba(0,0,0,0)' });
+      var rect = new fabric.Rect({
+        left: x, top: y, width: Math.abs(lX - fX), height: Math.abs(lY - fY),
+        strokeDashArray: [5, 3], stroke: 'red', strokeWidth: 1,
+        fill: '#ff0',
+        // fill: 'rgba(0,0,0,0)',
+        hasControls: false,
+        selectable: false,
+        evented: false
+      }).setOpacity(0.3);
       canvas.add(rect);
       console.log("-->> Image + Rect: " + x + ' ' + y + ' ' + Math.abs(lX - fX) + ' ' + Math.abs(lY - fY));
     }
