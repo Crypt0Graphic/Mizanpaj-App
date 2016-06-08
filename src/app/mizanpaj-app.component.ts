@@ -15,11 +15,14 @@ import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
 
 export class MizanpajAppAppComponent implements OnInit {
 
+  title = "Ana Sayfa";
+
   public firstX: number;
   public firstY: number;
   public lastX: number;
   public lastY: number;
   public data: string;
+  public srcLeft: string = "../../images/kupurSecond.jpg";
 
   constructor(mdIconRegistry: MdIconRegistry) {
     mdIconRegistry
@@ -29,7 +32,7 @@ export class MizanpajAppAppComponent implements OnInit {
   ngOnInit() {
 
     var canvas = new fabric.Canvas('cLeft');
-    let src = "../../images/kupurSecond.jpg";
+    let src = this.srcLeft;
 
     canvas.on('mouse:down', (event) => {
       var position = canvas.getPointer(event.e);
@@ -51,7 +54,7 @@ export class MizanpajAppAppComponent implements OnInit {
 
   public clip() {
     var canvas = new fabric.Canvas('cLeft');
-    let src = "../../images/kupurSecond.jpg";
+    let src = this.srcLeft;
     loadImage(src, canvas);
 
     // If there is enough width -> clipTo
@@ -68,23 +71,30 @@ export class MizanpajAppAppComponent implements OnInit {
           height: Math.abs(this.lastY - this.firstY),
           hasControls: false,
           selectable: false,
-          evented: false
+          evented: false,
+          fill: '#f5f5f5'
+          // fill: 'rgba(0,0,0,0)'
         });
         shp.render(ctx);
-        this.data = JSON.stringify(canvas);
       };
     }
-  }
-
-  public undo() {
-    var canvas = new fabric.Canvas('cLeft');
-    let src = "../../images/kupurSecond.jpg";
-    loadImage(src, canvas);
+    this.data = canvas.toDataURL();
   }
 
   public send() {
     var canvas = new fabric.Canvas('cRight');
-    canvas.loadFromJSON(this.data, canvas.renderAll.bind(canvas));
+    fabric.Image.fromURL(this.data, function (img) {
+      img.left = 10;
+      img.top = 10;
+      canvas.add(img);
+      // canvas.renderAll();
+    })
+  }
+
+  public undo() {
+    var canvas = new fabric.Canvas('cLeft');
+    let src = this.srcLeft;
+    loadImage(src, canvas);
   }
 
 }
