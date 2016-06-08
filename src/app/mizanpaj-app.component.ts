@@ -78,17 +78,16 @@ export class MizanpajAppAppComponent implements OnInit {
         shp.render(ctx);
       };
     }
-    this.data = canvas.toDataURL();
+    // this.data = canvas.toDataURL();
   }
 
   public send() {
-    var canvas = new fabric.Canvas('cRight');
-    fabric.Image.fromURL(this.data, function (img) {
-      img.left = 10;
-      img.top = 10;
-      canvas.add(img);
-      // canvas.renderAll();
-    })
+    var canvasRight = new fabric.Canvas('cRight');
+
+    fabric.Image.fromURL(this.data, (oImg) => {
+      canvasRight.add(oImg);
+      canvasRight.renderAll();
+    });
   }
 
   public undo() {
