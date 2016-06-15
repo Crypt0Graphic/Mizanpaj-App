@@ -35,44 +35,45 @@ export class MizanpajAppAppComponent implements OnInit {
   ngOnInit() {
 
     this.cR = new fabric.Canvas('cRight');
-
     this.cL = new fabric.Canvas('cLeft');
     var src = this.srcLeft;
 
 
-    this.cL.on('mouse:down', (event:any):void => {
+    this.cL.on('mouse:down', (event: any): void => {
+      this.cL.clipTo = null;
       var position = this.cL.getPointer(event.e);
       this.firstX = position.x;
       this.firstY = position.y;
       console.log("Down");
     });
 
-    this.cL.on('mouse:up', (event:any):void => {
+    this.cL.on('mouse:up', (event: any): void => {
       var position = this.cL.getPointer(event.e);
       this.lastX = position.x;
       this.lastY = position.y;
       console.log("Up");
       // ReLoad Image
-      loadImage(src, this.cL, this.firstX, this.firstY, this.lastX, this.lastY);
+      loadImage(src, this.cL, '0', this.firstX, this.firstY, this.lastX, this.lastY);
     });
 
-    loadImage(src, this.cL);
-
-    //this.canvasLeft = canvas;
+    loadImage(src, this.cL, '1');
 
   }; // End of ngOnInıt
 
   public clip = () => {
 
     var src = this.srcLeft;
-    loadImage(src, this.cL);
+    loadImage(src, this.cL, '2');
+
+    //this.cL.clipTo = null;
+    this.cL.renderAll();
 
     // If there is enough width -> clipTo
     if (Math.abs(this.firstX - this.lastX) > 20 || Math.abs(this.firstY - this.lastY) > 20) {
 
       this.cL.clipTo = (ctx) => {
 
-        console.log("-->> clipTo: " + this.firstX +" "+ this.firstY +" "+  this.lastX +" "+  this.lastY);
+        console.log("-->> clipTo: " + this.firstX + " " + this.firstY + " " + this.lastX + " " + this.lastY);
 
         var rect = new fabric.Rect({
           top: this.firstY,
@@ -87,11 +88,12 @@ export class MizanpajAppAppComponent implements OnInit {
         });
         rect.render(ctx);
       };
+      this.cL.renderAll();
     }
   }
 
   public send = () => {
-
+    this.cL.clipTo = null;
     // Cropped Image toDataUrl START
     var croppedImage = new Image;
     croppedImage.src = this.cL.toDataURL({
@@ -112,15 +114,35 @@ export class MizanpajAppAppComponent implements OnInit {
   }
 
   public undo = () => {
+    this.cL.clipTo = null;
     var canvas = new fabric.Canvas('cLeft');
     let src = this.srcLeft;
-    loadImage(src, canvas);
+    loadImage(src, canvas, '3');
     console.log("Undo");
+  }
+
+  public delete = () => {
+    var activeObject = this.cR.getActiveObject(),
+      activeGroup = this.cR.getActiveGroup();
+    if (activeObject) {
+      if (confirm('Seçili öğeyi silmek istediğinize emin misiniz?')) {
+        this.cR.remove(activeObject);
+      }
+    }
+    else if (activeGroup) {
+      if (confirm('Seçili öğeleri silmek istediğinize emin misiniz?')) {
+        var objectsInGroup = activeGroup.getObjects();
+        this.cR.discardActiveGroup();
+        objectsInGroup.forEach((object) => {
+          this.cR.remove(object);
+        });
+      }
+    }
   }
 
 }
 
-var loadImage = (src: string, canvas: any, fX?: number, fY?: number, lX?: number, lY?: number) => {
+var loadImage = (src: string, canvas: any, info: string, fX?: number, fY?: number, lX?: number, lY?: number) => {
   canvas.clear();
   fabric.Image.fromURL(src, (oImg) => {
     oImg.left = 10;
@@ -153,10 +175,10 @@ var loadImage = (src: string, canvas: any, fX?: number, fY?: number, lX?: number
         evented: false
       }).setOpacity(0.3);
       canvas.add(rect);
-      console.log("-->> Image + Rect: " + x + ' ' + y + ' ' + Math.abs(lX - fX) + ' ' + Math.abs(lY - fY));
+      console.log("-->> Image + Rect: " + info);
     }
     else {
-      console.log("-->> Image Loaded");
+      console.log("-->> Image Loaded: " + info);
     }
     canvas.renderAll();
     canvas.setHeight(oImg.getHeight() + 20);

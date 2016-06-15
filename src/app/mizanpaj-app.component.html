@@ -8,17 +8,22 @@
     <section>
     <!--<button md-raised-button color="primary" class="md-button">GÖNDER<i class="material-icons">call_made</i></button>
     <button md-raised-button color="default" class="md-button"><i class="material-icons">clear</i>İPTAL</button>-->
-    <button md-icon-button color="primary" class="md-button" (click)="clip()"><md-icon>content_cut</md-icon></button>    
+    <button md-icon-button color="primary" class="md-button" (click)="clip()"><md-icon>content_cut</md-icon></button>
     <button md-icon-button color="primary" class="md-button" (click)="undo()"><md-icon>undo</md-icon></button>
     <button md-icon-button color="primary" class="md-button" (click)="send()"><md-icon>forward</md-icon></button>
   </section>
+  <aside>
+    <button md-icon-button color="primary" class="md-button" (click)="delete()"><md-icon>delete</md-icon></button>
+    <button md-icon-button color="primary" class="md-button" (click)="download()"><md-icon>get_app</md-icon></button>
+    <button md-icon-button color="primary" class="md-button" (click)="save()"><md-icon>done</md-icon></button>
+  </aside>
 </div>
 
-<div style="width:100%;"> 
+<div style="width:100%;">
         <div style="float:left; margin: 10px; display:inline-block;" class="leftCanvas">
           <canvas id="cLeft" width="595px" height="842px" style="border:1px solid #000"></canvas>
-         </div> 
+         </div>
         <div style="float:right; margin: 10px; display:inline-block;" class="rightCanvas">
           <canvas id="cRight" width="595px" height="842px" style="border:1px solid #000"></canvas>
-          </div> 
-</div> 
+          </div>
+</div>
