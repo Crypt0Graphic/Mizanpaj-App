@@ -142,9 +142,7 @@ export class MizanpajAppAppComponent implements OnInit {
 
   public download = () => {
     var aElement = <HTMLAnchorElement>document.getElementById("btnDownload");
-    console.log("1");
     aElement.href = this.cR.toDataURL('image/jpeg');
-    console.log("2");
   }
 
 }
