@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { Observable }     from 'rxjs/Observable';
+import {MizanpajApp} from './mizanpaj-app';
+
 import {MdToolbar} from '@angular2-material/toolbar';
 import {MD_BUTTON_DIRECTIVES} from '@angular2-material/button';
 import {MdIcon, MdIconRegistry} from '@angular2-material/icon';
@@ -17,6 +21,8 @@ export class MizanpajAppAppComponent implements OnInit {
 
   title = "Ana Sayfa";
 
+  public model: MizanpajApp; // Class
+
   public firstX: number;
   public firstY: number;
   public lastX: number;
@@ -30,6 +36,7 @@ export class MizanpajAppAppComponent implements OnInit {
   constructor(mdIconRegistry: MdIconRegistry) {
     mdIconRegistry
       .registerFontClassAlias('fontawesome', 'fa');
+    this.model = new MizanpajApp();
   }
 
   ngOnInit() {
@@ -37,7 +44,6 @@ export class MizanpajAppAppComponent implements OnInit {
     this.cR = new fabric.Canvas('cRight');
     this.cL = new fabric.Canvas('cLeft');
     var src = this.srcLeft;
-
 
     this.cL.on('mouse:down', (event: any): void => {
       this.cL.clipTo = null;
@@ -87,6 +93,7 @@ export class MizanpajAppAppComponent implements OnInit {
           // fill: 'rgba(0,0,0,0)'
         });
         rect.render(ctx);
+
       };
       this.cL.renderAll();
     }
